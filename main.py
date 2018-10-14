@@ -1,10 +1,12 @@
 from pygame import *
 import numpy as np
-import camera
-
+import camera, player
+font.init()
 running = True
 
 screen = display.set_mode((1280, 720))
+
+arialFont = font.SysFont("Arial", 20)
 
 mapSimple = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -38,8 +40,8 @@ workMap = np.ndarray((24,24), dtype=np.int32)
 for i,v in enumerate(mapSimple):
     workMap[i] = v
 
-cam = camera.Camera(12, 12)
 
+player = player.Player(10, 12)
 clockity = time.Clock()
 
 keysDown = [False, False, False, False]
@@ -70,30 +72,35 @@ while running:
                 keysDown[2] = False
             elif e.key == K_d:
                 keysDown[3] = False
-        elif e.type == MOUSEBUTTONDOWN:
-            if e.button == 4:
-                cam.facing_vector*=1.1
-            elif e.button == 5:
-                cam.facing_vector*=1/1.1
+
     screen.fill((0,0,0))
     if keysDown[0]:
-        cam.move_forward(0.1)
+        player.move_forward(1)
     if keysDown[1]:
-        cam.move_sideways(-0.1)
+        player.move_sideways(-1)
     if keysDown[2]:
-        cam.move_forward(-0.1)
+        player.move_forward(-1)
     if keysDown[3]:
-        cam.move_sideways(0.1)
+        player.move_sideways(1)
     mouse.set_visible(not lockMouse)
     event.set_grab(lockMouse)
     if lockMouse:
-        cam.rotate_camera(mouse.get_rel()[0]/15)
+        player.rotate_camera(mouse.get_rel()[0]/15)
 
-    drawSurf = Surface((512, 288))
-    cam.render_scene(drawSurf, workMap)
+    player.update(mapSimple, clockity.get_time()/1000)
 
-    screen.blit(transform.scale(drawSurf, (1280,720)), (0,0))
+    render_size = (640, 320)
+    drawSurf = Surface(render_size)
+    player.render_scene(drawSurf, mapSimple)
+
+    screen.blit(transform.scale(drawSurf, (render_size[0]*2, render_size[1]*2)), (0,0))
+
+    draw.line(screen, (255,255,255), (render_size[0]+5, render_size[1]), (render_size[0]-5, render_size[1]), 3)
+    draw.line(screen, (255, 255, 255), (render_size[0], render_size[1]+5), (render_size[0], render_size[1]-5), 3)
+
+    screen.blit(arialFont.render("FPS: %.2f"%clockity.get_fps(), True, (255,255,255), (0,0,0)), (5,5))
+
+
     display.flip()
 
     clockity.tick(20)
-    display.set_caption(str(clockity.get_fps()))
