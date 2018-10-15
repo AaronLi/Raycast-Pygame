@@ -52,6 +52,8 @@ class Camera:
         self.camera_plane[0] = 0
         self.camera_plane[1] = 0.66
 
+
+    # camera has absolute position movement
     def move_forward(self, move_distance):
         self.pos+=self.facing_vector*move_distance
 
@@ -71,8 +73,16 @@ class Camera:
         self.facing_vector = np.dot(self.facing_vector, rotate_matrix)
         self.camera_plane = np.dot(self.camera_plane, rotate_matrix)
 
-    def render_scene(self, surface :Surface, world :np.ndarray, sprites :list, FLOORCAST = False):
 
+    def render_scene(self, surface :Surface, world :np.ndarray, sprites :list, FLOORCAST = False):
+        """
+        renders the world using raycasting
+        :param surface:
+        :param world:
+        :param sprites:
+        :param FLOORCAST:
+        :return: None
+        """
         check_position = np.ndarray((2,), np.float32)
 
         step_direction = np.ndarray((2,), np.int32)
