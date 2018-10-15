@@ -11,6 +11,8 @@ textures = [
     image.load("textures/stone_bricks.png"),
     image.load("textures/stone_slab_top.png")]
 
+
+
 def double_tile_surface(surfaceIn :Surface):
     surfaceOut = Surface((surfaceIn.get_width()*2, surfaceIn.get_height()*2), SRCALPHA)
     surfaceOut.blit(surfaceIn, (0,0))
@@ -69,14 +71,17 @@ class Camera:
         self.facing_vector = np.dot(self.facing_vector, rotate_matrix)
         self.camera_plane = np.dot(self.camera_plane, rotate_matrix)
 
-    def render_scene(self, surface :Surface, world :np.ndarray, FLOORCAST = False):
+    def render_scene(self, surface :Surface, world :np.ndarray, sprites :list, FLOORCAST = False):
 
         check_position = np.ndarray((2,), np.float32)
 
         step_direction = np.ndarray((2,), np.int32)
 
+        zbuffer = np.ndarray((surface.get_width(),), np.float32)
+
         draw.rect(surface, (20, 20, 20), (0, 0, surface.get_width(), surface.get_height()//2))
         draw.rect(surface, (40, 40, 40), (0, surface.get_height()//2, surface.get_width(), surface.get_height() // 2))
+
 
         for screen_x in range(surface.get_width()):
             map_pos = self.pos.astype(np.int32)
@@ -166,6 +171,10 @@ class Camera:
 
             surface.blit(scaled_pixels, (screen_x, start_y))
 
+            # fill in z buffer
+
+            zbuffer[screen_x] = distance
+
             # floor casting
             if FLOORCAST:
                 floor_texture_coordinate = np.ndarray((2,), np.float32)
@@ -212,9 +221,48 @@ class Camera:
                     drawBuf[screen_x][surface.get_height() - screen_y] = col[:3]
 
                 del drawBuf
+        # sprite casting
+        sprites = [s for s in sprites if s != self]
 
 
+        sprite_draw_order = [(0, 0) for i in range(len(sprites))]
 
+        for i, sprite in enumerate(sprites):
+            sprite_draw_order[i] = (((self.pos[0] - sprite.pos[0])**2 + (self.pos[1] - sprite.pos[1])**2), i)
+
+        sprite_draw_order.sort(reverse=True)
+
+        for i,v in enumerate(sprite_draw_order):
+            draw_sprite = sprites[v[1]].get_sprite(self.facing_vector, self.pos)
+            sprite_pos_rel_to_camera = sprites[v[1]].pos - self.pos
+
+            invDet = 1 / (self.camera_plane[0] * self.facing_vector[1] - self.facing_vector[0] * self.camera_plane[1])
+
+            transformX = invDet * (self.facing_vector[1] * sprite_pos_rel_to_camera[0] - self.facing_vector[0] * sprite_pos_rel_to_camera[1])
+            transformY = invDet * (-self.camera_plane[1] * sprite_pos_rel_to_camera[0] + self.camera_plane[0] * sprite_pos_rel_to_camera[1])
+            spriteScreenPos = int((surface.get_width()/2) * (1+transformX/transformY))
+
+            sprite_height = abs(int(surface.get_height()/transformY))
+
+            sprite_width = abs(int(surface.get_height()/transformY))
+
+            start_x = spriteScreenPos - sprite_width//2
+            if start_x < 0:
+                start_x = 0
+
+            end_x = spriteScreenPos + sprite_width//2
+            if end_x > surface.get_width():
+                end_x = surface.get_width()-1
+
+            for draw_stripe_x in range(start_x, end_x):
+                textureX = int(256*(draw_stripe_x - (-sprite_width / 2 + spriteScreenPos)) * draw_sprite.get_width() / sprite_width) / 256
+                if 0 < transformY and 0 < draw_stripe_x:
+                    if transformY< zbuffer[draw_stripe_x]  and draw_stripe_x < surface.get_width():
+                        spriteSlice = transform.scale(draw_sprite.subsurface((textureX, 0, 1, draw_sprite.get_height())).copy(), (1, min(sprite_height, 50000)))
+                        #TODO: darken sprite based on distance
+                        surface.blit(spriteSlice, (draw_stripe_x, surface.get_height()//2 - spriteSlice.get_height()//2))
+
+        return surface
 
 if __name__ == "__main__":
     cam = Camera()

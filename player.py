@@ -1,10 +1,10 @@
 import numpy as np
-import camera
+import entity
 
-class Player(camera.Camera):
+class Player(entity.Entity):
     def __init__(self, posX=0, posY=0) -> None:
-        super().__init__(posX, posY)
-        self.velocity = np.zeros((2,), np.float32)
+        super().__init__(None, posX, posY)
+
 
     def move_forward(self, magnitude):
         self.velocity += self.facing_vector * magnitude
