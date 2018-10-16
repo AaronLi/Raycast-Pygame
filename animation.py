@@ -9,7 +9,6 @@ class Animation:
         self.passed_time = 99999
         self.frames = []
         self.fps = 5
-        self.done_running = True
         self.type = animation_type
 
     def set_frames(self, frames, fps):
@@ -39,7 +38,7 @@ class Animation:
 
     def get_total_animation_duration(self):
         '''
-        :return: total time in milliseconds that the animation will take to run
+        :return: total time in seconds that the animation will take to run
         '''
 
         return len(self.frames)/self.fps
@@ -47,3 +46,4 @@ class Animation:
     def animation_done_running(self):
         if self.type == ONE_WAY:
             return self.passed_time > self.get_total_animation_duration()
+        return False

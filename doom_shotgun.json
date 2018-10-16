@@ -1,0 +1,58 @@
+{
+ "type": "weapon",
+ "mag_size": 1,
+ "damage": 80,
+
+ "frames": {
+  "hold": {
+   "frames": [
+    "textures/doom_sg/doom_shotgun_default.png"
+   ],
+   "frame_rate": 5
+  },
+  "reload": {
+   "frames": [
+    "textures/doom_sg/doom_shotgun002.png",
+    "textures/doom_sg/doom_shotgun003.png",
+    "textures/doom_sg/doom_shotgun004.png",
+    "textures/doom_sg/doom_shotgun005.png",
+    "textures/doom_sg/doom_shotgun006.png",
+    "textures/doom_sg/doom_shotgun007.png",
+    "textures/doom_sg/doom_shotgun008.png",
+    "textures/doom_sg/doom_shotgun009.png",
+    "textures/doom_sg/doom_shotgun010.png",
+    "textures/doom_sg/doom_shotgun011.png",
+    "textures/doom_sg/doom_shotgun012.png",
+    "textures/doom_sg/doom_shotgun013.png"
+   ],
+   "reload_time": 1.7
+  },
+  "firing": {
+   "frames": [
+        "textures/doom_sg/doom_shotgun000.png",
+        "textures/doom_sg/doom_shotgun001.png"
+   ],
+   "frame_rate": 10
+  },
+  "ground": {
+   "front":{
+     "frames": [
+      "textures/doom_sg/doom_shotgun_ground.png"
+     ],
+     "frame_rate": 5
+   },
+   "back":{
+    "frames":["textures/doom_sg/doom_shotgun_ground.png"],
+    "frame_rate": 5
+   },
+   "left": {
+    "frames":["textures/doom_sg/doom_shotgun_ground.png"],
+    "frame_rate" : 5
+   },
+   "right": {
+    "frames":["textures/doom_sg/doom_shotgun_ground.png"],
+    "frame_rate": 5
+}
+  }
+ }
+}

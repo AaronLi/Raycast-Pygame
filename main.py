@@ -22,6 +22,7 @@ gameworld.add_entity(filereader.read_file("standing_target.json"))
 
 player = filereader.read_file("player.json")
 player.rotate_camera(180)
+player.held_weapon = filereader.read_file("doom_shotgun.json")
 gameworld.add_entity(player)
 gameworld.set_camera(player)
 clockity = time.Clock()
