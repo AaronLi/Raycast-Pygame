@@ -1,0 +1,48 @@
+{
+ "type": "entity",
+ "health": 100,
+ "x_position": 9.5,
+ "y_position": 1.5,
+ "frames": {
+  "front": {
+   "standing": "textures/girl/sprite_stand.png",
+   "walking": {
+    "frames": [
+      "textures/girl/girl_walk_forward_0.png",
+      "textures/girl/girl_walk_forward_1.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "rear": {
+   "standing": "textures/girl/sprite_stand_back.png",
+   "walking": {
+    "frames": [
+      "textures/girl/girl_walk_rear_0.png",
+      "textures/girl/girl_walk_rear_1.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "left": {
+   "standing": "textures/girl/sprite_stand_left.png",
+   "walking": {
+    "frames": [
+      "textures/girl/girl_walk_left_0.png",
+      "textures/girl/girl_walk_left_1.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "right": {
+   "standing": "textures/girl/sprite_stand_right.png",
+   "walking": {
+    "frames": [
+      "textures/girl/girl_walk_right_0.png",
+      "textures/girl/girl_walk_right_1.png"
+    ],
+    "frame_rate": 5
+   }
+  }
+ }
+}

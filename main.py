@@ -1,6 +1,5 @@
 from pygame import *
-import numpy as np
-import player, entity, game_world
+import player, entity, game_world, filereader
 font.init()
 running = True
 
@@ -10,13 +9,19 @@ arialFont = font.SysFont("Arial", 20)
 
 gameworld = game_world.GameWorld().load_world_from_file("dat/world2.txt")
 
+debug_sprite = image.load("textures/test_sprite.png").convert_alpha()
 
-#gameworld.add_entity(entity.Entity(None, 15, 12))
 
-player = player.Player(1.5, 1.5)
+
+
+gameworld.add_entity(filereader.read_file("standing_target.json"))
+
+#gameworld.entities[0].rotate_camera(180)
+
+player = filereader.read_file("player.json")
 player.rotate_camera(180)
 gameworld.add_entity(player)
-gameworld.set_camera(player)
+gameworld.set_camera(gameworld.entities[0])
 clockity = time.Clock()
 
 keysDown = [False, False, False, False]
@@ -36,14 +41,21 @@ while running:
                 player.handle_key(e.key, True)
         elif e.type == KEYUP:
             player.handle_key(e.key, False)
+        elif e.type == MOUSEBUTTONDOWN:
+            if e.button == 1 and player.can_fire():
+                player.fire_weapon()
+            player.handle_mouse_botton(e.button, True)
+        elif e.type == MOUSEBUTTONUP:
+            player.handle_mouse_botton(e.button, False)
     screen.fill((0,0,0))
+    deltatime = clockity.get_time()/1000
 
     mouse.set_visible(not lockMouse)
     event.set_grab(lockMouse)
     if lockMouse:
         player.rotate_camera(mouse.get_rel()[0]/15)
 
-    gameworld.update_world(clockity.get_time()/1000)
+    gameworld.update_world(deltatime)
 
     render_size = (640, 360)
     drawSurf = Surface(render_size)
@@ -53,12 +65,8 @@ while running:
 
 
     if showHud:
-        draw.line(screen, (255,255,255), (render_size[0]+5, render_size[1]), (render_size[0]-5, render_size[1]), 2)
-        draw.line(screen, (255, 255, 255), (render_size[0], render_size[1]+5), (render_size[0], render_size[1]-5), 2)
-
-        screen.blit(arialFont.render("FPS: %.2f"%clockity.get_fps(), True, (255,255,255), (0,0,0)), (5,5))
-
-
+        player.draw_hud(screen)
+        screen.blit(arialFont.render("FPS: %.2f" % clockity.get_fps(), True, (255, 255, 255), (0, 0, 0)), (5, 5))
     display.flip()
 
     clockity.tick(30)

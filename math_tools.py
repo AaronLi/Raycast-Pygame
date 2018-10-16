@@ -1,4 +1,6 @@
 import numpy as np
+from pygame import transform, Surface
+
 #unit_vector and angle_between are from
 # https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249
 
@@ -20,5 +22,8 @@ def angle_between(v1, v2):
     v2_u = unit_vector(v2)
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
-def angle_from_zero(v1):
-    return angle_between(v1, (1, 0))
+
+def scale_image(surfIn :Surface, scale_amount):
+    new_size = (surfIn.get_width()*scale_amount, surfIn.get_height()*scale_amount)
+
+    return transform.scale(surfIn, new_size)

@@ -1,4 +1,4 @@
-from pygame import Surface, draw, image, transform, SRCALPHA, surfarray
+from pygame import Surface, draw, image, transform, SRCALPHA, surfarray, BLEND_SUB, BLEND_MULT
 import numpy as np
 import math
 
@@ -52,6 +52,8 @@ class Camera:
         self.camera_plane[0] = 0
         self.camera_plane[1] = 0.66
 
+        self.sprites_in_view = []
+
 
     # camera has absolute position movement
     def move_forward(self, move_distance):
@@ -83,6 +85,8 @@ class Camera:
         :param FLOORCAST:
         :return: None
         """
+
+        self.sprites_in_view = []
         check_position = np.ndarray((2,), np.float32)
 
         step_direction = np.ndarray((2,), np.int32)
@@ -243,7 +247,8 @@ class Camera:
         sprite_draw_order.sort(reverse=True)
 
         for i,v in enumerate(sprite_draw_order):
-            draw_sprite = sprites[v[1]].get_sprite(self.facing_vector, self.pos)
+            seen_sprite = False
+            draw_sprite = sprites[v[1]].get_sprite(self.facing_vector)
             sprite_pos_rel_to_camera = sprites[v[1]].pos - self.pos
 
             invDet = 1 / (self.camera_plane[0] * self.facing_vector[1] - self.facing_vector[0] * self.camera_plane[1])
@@ -268,9 +273,22 @@ class Camera:
                 textureX = int(256*(draw_stripe_x - (-sprite_width / 2 + spriteScreenPos)) * draw_sprite.get_width() / sprite_width) / 256
                 if 0 < transformY and 0 < draw_stripe_x:
                     if transformY< zbuffer[draw_stripe_x]  and draw_stripe_x < surface.get_width():
+
                         spriteSlice = transform.scale(draw_sprite.subsurface((textureX, 0, 1, draw_sprite.get_height())).copy(), (1, min(sprite_height, 50000)))
-                        #TODO: darken sprite based on distance
+
+                        shaderSurf = Surface(spriteSlice.get_size(), SRCALPHA)
+                        shade_val = min(22*math.hypot(sprite_pos_rel_to_camera[0], sprite_pos_rel_to_camera[1]), 255)
+
+                        shaderSurf.fill([255-shade_val, 255-shade_val, 255-shade_val])
+
+                        spriteSlice.blit(shaderSurf, (0,0), (0, 0)+shaderSurf.get_size(), BLEND_MULT) # blend mult multiplies each rgb value by the blitter's rgb/255 value
+
                         surface.blit(spriteSlice, (draw_stripe_x, surface.get_height()//2 - spriteSlice.get_height()//2))
+
+                        if draw_stripe_x == int(surface.get_width()//2): # if the stripe goes through the user's crosshairs
+                            seen_sprite = True
+            if seen_sprite:
+                self.sprites_in_view.append(sprites[v[1]])
 
         return surface
 
