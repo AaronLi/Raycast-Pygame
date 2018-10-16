@@ -1,0 +1,56 @@
+{
+ "type": "entity",
+ "health": 100,
+ "x_position": 9.5,
+ "y_position": 1.5,
+ "frames": {
+  "front": {
+   "standing": "textures/doom_demon/demon_stand_front.png",
+   "walking": {
+    "frames": [
+      "textures/doom_demon/doom_demon_walk_forward_0.png",
+      "textures/doom_demon/doom_demon_walk_forward_1.png",
+      "textures/doom_demon/doom_demon_walk_forward_2.png",
+      "textures/doom_demon/doom_demon_walk_forward_3.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "rear": {
+   "standing": "textures/doom_demon/demon_stand_back.png",
+   "walking": {
+    "frames": [
+      "textures/doom_demon/doom_demon_walk_rear_0.png",
+      "textures/doom_demon/doom_demon_walk_rear_1.png",
+      "textures/doom_demon/doom_demon_walk_rear_2.png",
+      "textures/doom_demon/doom_demon_walk_rear_3.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "left": {
+   "standing": "textures/doom_demon/demon_stand_left.png",
+   "walking": {
+    "frames": [
+      "textures/doom_demon/doom_demon_walk_left_0.png",
+      "textures/doom_demon/doom_demon_walk_left_1.png",
+      "textures/doom_demon/doom_demon_walk_left_2.png",
+      "textures/doom_demon/doom_demon_walk_left_3.png"
+    ],
+    "frame_rate": 5
+   }
+  },
+  "right": {
+   "standing": "textures/doom_demon/demon_stand_right.png",
+   "walking": {
+    "frames": [
+      "textures/doom_demon/doom_demon_walk_right_0.png",
+      "textures/doom_demon/doom_demon_walk_right_1.png",
+      "textures/doom_demon/doom_demon_walk_right_2.png",
+      "textures/doom_demon/doom_demon_walk_right_3.png"
+    ],
+    "frame_rate": 5
+   }
+  }
+ }
+}
