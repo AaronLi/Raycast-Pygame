@@ -2,7 +2,7 @@
  "type": "entity",
  "health": 100,
  "x_position": 9.5,
- "y_position": 1.5,
+ "y_position": 2.5,
  "frames": {
   "front": {
    "standing": "textures/girl/sprite_stand.png",

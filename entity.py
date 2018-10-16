@@ -73,15 +73,17 @@ class Entity(camera.Camera):
             i.update(deltatime)
 
     def move_forward(self, magnitude):
-        self.velocity += self.facing_vector * magnitude
+        facing_vector_magnitude = math.hypot(self.facing_vector[0], self.facing_vector[1])
+        self.velocity += self.facing_vector * magnitude/facing_vector_magnitude
 
     def move_sideways(self, magnitude):
+        facing_vector_magnitude = math.hypot(self.facing_vector[0], self.facing_vector[1])
         perpVector = np.ndarray((2,), np.float32)
 
         perpVector[0] = self.facing_vector[1]
         perpVector[1] = -self.facing_vector[0]
 
-        self.velocity += perpVector * magnitude
+        self.velocity += perpVector * magnitude / facing_vector_magnitude
 
     def get_facing_index(self, viewer_vector):
         dot_product = np.dot(viewer_vector, self.facing_vector)
