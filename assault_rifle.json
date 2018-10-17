@@ -1,0 +1,58 @@
+{
+ "type": "weapon",
+ "fire_mode": "full_auto",
+ "fire_rate": 600.0,
+ "mag_size": 20,
+ "damage": 15,
+ "frames": {
+  "hold": {
+   "frames": [
+    "textures/assault_rifle/assault_rifle_hold0.png"
+   ],
+   "frame_rate": 5
+  },
+  "firing": {
+   "frames": [
+     "textures/assault_rifle/assault_rifle_shoot0.png",
+     "textures/assault_rifle/assault_rifle_shoot1.png"
+   ],
+   "frame_rate": 10
+  },
+  "reload": {
+   "frames": [
+     "textures/assault_rifle/assault_rifle_reload0.png",
+     "textures/assault_rifle/assault_rifle_reload1.png",
+     "textures/assault_rifle/assault_rifle_reload2.png",
+     "textures/assault_rifle/assault_rifle_reload3.png",
+     "textures/assault_rifle/assault_rifle_reload4.png"
+   ],
+   "reload_time": 1
+  },
+  "ground": {
+   "front": {
+    "frames": [
+      "textures/assault_rifle/assault_rifle_ground.png"
+    ],
+    "frame_rate": 5
+   },
+   "back": {
+    "frames": [
+      "textures/assault_rifle/assault_rifle_ground.png"
+    ],
+    "frame_rate": 5
+   },
+   "left": {
+    "frames": [
+      "textures/assault_rifle/assault_rifle_ground.png"
+    ],
+    "frame_rate": 5
+   },
+   "right": {
+    "frames": [
+      "textures/assault_rifle/assault_rifle_ground.png"
+    ],
+    "frame_rate": 5
+   }
+  }
+ }
+}
