@@ -1,6 +1,6 @@
 import numpy as np
 
-import entity, pygame, math_tools, math, animation, weapon
+import entity, pygame, math_tools, math, animation, weapon, world_map
 from pygame import image, draw, font
 
 font.init()
@@ -34,7 +34,7 @@ class Player(entity.Entity):
     def handle_mouse_botton(self, mouse_button, mouse_button_state):
         self.mouse_buttons_down[mouse_button] = mouse_button_state
 
-    def update(self, worldMap: np.ndarray, deltatime: float):
+    def update(self, worldMap: world_map.World_Map, deltatime: float):
         self.pickup_items()
 
         self.move_player()
@@ -52,13 +52,14 @@ class Player(entity.Entity):
 
     def check_hitscan_hits(self):
         for i in self.sprites_in_view:
-            angle_deviation = math.degrees(math_tools.angle_between(i.pos-self.pos, self.facing_vector))
+            angle_deviation = math_tools.angle_between(i.pos-self.pos, self.facing_vector)
 
             position_difference = i.pos - self.pos
 
             distance = math.hypot(position_difference[0], position_difference[1])
 
             current_deviation_max = (21.5*i.sprite_percentage)/distance
+
             if current_deviation_max>angle_deviation:
                 i.damage(self.held_weapon.damage)
 
@@ -103,6 +104,7 @@ class Player(entity.Entity):
             collidedEntity = self.colliding_sprites[i]
             if type(collidedEntity) == weapon.Weapon_Entity:
                 if collidedEntity.can_pick_up():
+                    print("Blah")
                     collidedEntity.health = 0
                     self.parent_world.entities.append(self.held_weapon.get_floor_entity(self.pos[0], self.pos[1]))
                     self.set_weapon(collidedEntity.weapon)

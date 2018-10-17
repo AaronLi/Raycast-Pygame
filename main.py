@@ -1,6 +1,5 @@
 from pygame import *
-import game_world, filereader
-import numpy as np
+import game_world, filereader, world_map
 font.init()
 running = True
 
@@ -8,14 +7,15 @@ screen = display.set_mode((1280,800))
 
 arialFont = font.SysFont("Arial", 20)
 
-gameworld = game_world.GameWorld().load_world_from_file("dat/world2.txt")
+gameworld = game_world.GameWorld()
+gameworld.world = filereader.read_file("world1.json")
 
 debug_sprite = image.load("textures/test_sprite.png").convert_alpha()
 
 gameworld.add_entity(filereader.read_file("doom_demon.json").rotate_camera(-90))
 gameworld.add_entity(filereader.read_file("standing_target.json"))
 
-gameworld.add_entity(filereader.read_file("doom_shotgun.json").get_floor_entity(5.5, 3.5))
+gameworld.add_entity(filereader.read_file("doom_shotgun.json").get_floor_entity(1.5, 3.5))
 
 player = filereader.read_file("player.json", gameworld)
 player.rotate_camera(180)

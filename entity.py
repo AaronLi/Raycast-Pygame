@@ -1,4 +1,4 @@
-import camera, math_tools, math, animation
+import camera, world_map, math, animation, math_tools
 from pygame import image, Surface
 import numpy as np
 
@@ -21,7 +21,6 @@ class Entity(camera.Camera):
         self.sprite_percentage = 0
         self.health = 100
         self.max_health = 100
-        self.set_sprites([image.load('textures/girl/sprite_stand.png').convert_alpha(), image.load("textures/girl/sprite_stand_back.png").convert_alpha(), image.load("textures/girl/sprite_stand_left.png").convert_alpha(), image.load("textures/girl/sprite_stand_right.png").convert_alpha()])
         self.velocity = np.zeros((2,), np.float32)
 
     def get_sprite(self, viewer_vector):
@@ -39,7 +38,7 @@ class Entity(camera.Camera):
     def set_sprites(self, sprites):
         self.standing_sprites = sprites
 
-        front_sprite = self.standing_sprites[0]
+        front_sprite = self.standing_sprites[0].get_frame()
 
         left_side = 0
         right_side = 0
@@ -59,7 +58,7 @@ class Entity(camera.Camera):
 
         self.sprite_percentage = self.width / front_sprite.get_width() # percentage of the texture that is filled by the sprite
 
-    def update(self, worldMap: np.ndarray, deltatime: float):
+    def update(self, worldMap: world_map.World_Map, deltatime: float):
         self.velocity *= 0.6
         if self.velocity[0] ** 2 < 0.0000000001:
             self.velocity[0] = 0
@@ -67,7 +66,7 @@ class Entity(camera.Camera):
             self.velocity[1] = 0
 
         newpos = self.pos + self.velocity * deltatime
-        if worldMap[int(np.floor(newpos[0]))][int(np.floor(newpos[1]))] != 0:
+        if worldMap.map_data[int(np.floor(newpos[0]))][int(np.floor(newpos[1]))] != 0:
             self.velocity[0] = 0
             self.velocity[1] = 0
             self.pos = np.round(self.pos, 2)

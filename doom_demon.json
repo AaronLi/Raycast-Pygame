@@ -1,11 +1,14 @@
 {
  "type": "entity",
  "health": 100,
- "x_position": 5.5,
- "y_position": 2.5,
+ "x_position": 3.5,
+ "y_position": 3.5,
  "frames": {
   "front": {
-   "standing": "textures/doom_demon/demon_stand_front.png",
+   "standing": {
+     "frames" :["textures/doom_demon/demon_stand_front.png"],
+     "frame_rate":5
+   },
    "walking": {
     "frames": [
       "textures/doom_demon/doom_demon_walk_forward_0.png",
@@ -17,7 +20,10 @@
    }
   },
   "rear": {
-   "standing": "textures/doom_demon/demon_stand_back.png",
+   "standing": {
+     "frames":["textures/doom_demon/demon_stand_back.png"],
+     "frame_rate": 5
+   },
    "walking": {
     "frames": [
       "textures/doom_demon/doom_demon_walk_rear_0.png",
@@ -29,7 +35,10 @@
    }
   },
   "left": {
-   "standing": "textures/doom_demon/demon_stand_left.png",
+   "standing":{
+     "frames":["textures/doom_demon/demon_stand_left.png"],
+     "frame_rate":5
+   },
    "walking": {
     "frames": [
       "textures/doom_demon/doom_demon_walk_left_0.png",
@@ -41,7 +50,10 @@
    }
   },
   "right": {
-   "standing": "textures/doom_demon/demon_stand_right.png",
+   "standing": {
+     "frames":["textures/doom_demon/demon_stand_right.png"],
+     "frame_rate":5
+   },
    "walking": {
     "frames": [
       "textures/doom_demon/doom_demon_walk_right_0.png",

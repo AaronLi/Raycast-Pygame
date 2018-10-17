@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from pygame import transform, Surface
+from pygame import transform, Surface, SRCALPHA
 
 #unit_vector and angle_between are from
 # https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249
@@ -29,3 +29,19 @@ def scale_image(surfIn :Surface, scale_amount):
     new_size = (surfIn.get_width()*scale_amount, surfIn.get_height()*scale_amount)
 
     return transform.scale(surfIn, new_size)
+
+def tile_image(to_tile :Surface, tile_amount :int):
+    '''
+    Tiles int(tile_amount) times
+    :param to_tile: Surface
+    :param tile_amount: int
+    :return: Surface, to_tile tiled tile_amount times
+    '''
+
+    tile_amount = int(tile_amount)
+    out_surf = Surface((to_tile.get_width()*tile_amount, to_tile.get_height()*tile_amount), SRCALPHA)
+
+    for i in range(tile_amount):
+        for j in range(tile_amount):
+            out_surf.blit(to_tile, (to_tile.get_width()*j, to_tile.get_height()*i))
+    return out_surf

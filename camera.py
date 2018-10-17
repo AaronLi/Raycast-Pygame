@@ -1,16 +1,6 @@
-from pygame import Surface, draw, image, transform, SRCALPHA, surfarray, BLEND_SUB, BLEND_MULT
+from pygame import Surface, draw, image, transform, SRCALPHA, surfarray, BLEND_MULT
 import numpy as np
-import math
-
-textures = [
-    image.load("textures/cobblestone.png"),
-    image.load("textures/cobblestone_mossy.png"),
-    image.load("textures/chiseled_stone_bricks.png"),
-    image.load("textures/cracked_stone_bricks.png"),
-    image.load("textures/mossy_stone_bricks.png"),
-    image.load("textures/stone_bricks.png"),
-    image.load("textures/stone_slab_top.png")]
-
+import math, world_map
 
 
 def double_tile_surface(surfaceIn :Surface):
@@ -20,9 +10,6 @@ def double_tile_surface(surfaceIn :Surface):
     surfaceOut.blit(surfaceIn, (0, surfaceIn.get_height()))
     surfaceOut.blit(surfaceIn, (surfaceIn.get_width(), surfaceIn.get_height()))
     return surfaceOut
-
-for i,v in enumerate(textures):
-    textures[i] = double_tile_surface(v)
 
 class Camera:
     NORTH_SOUTH = True
@@ -76,7 +63,7 @@ class Camera:
         self.camera_plane = np.dot(self.camera_plane, rotate_matrix)
 
 
-    def render_scene(self, surface :Surface, world :np.ndarray, sprites :list, FLOORCAST = False):
+    def render_scene(self,surface :Surface, w_map :world_map.World_Map, sprites :list, FLOORCAST = False):
         """
         renders the world using raycasting
         :param surface:
@@ -85,6 +72,7 @@ class Camera:
         :param FLOORCAST:
         :return: None
         """
+
 
         self.sprites_in_view = []
         self.colliding_sprites = []
@@ -144,7 +132,7 @@ class Camera:
                     hit_direction = Camera.NORTH_SOUTH
                     precise_ray[1]+=step_direction[1]
 
-                if world[map_pos[0]][map_pos[1]] != 0:
+                if w_map.map_data[map_pos[0]][map_pos[1]] != 0:
                     hit = True
 
             if hit_direction == Camera.EAST_WEST:
@@ -160,7 +148,7 @@ class Camera:
 
             lineHeight = surface.get_height() // distance
 
-            hit_data = world[map_pos[0]][map_pos[1]]
+            hit_data = w_map.map_data[map_pos[0]][map_pos[1]]
 
             start_y = int(surface.get_height()//2 - lineHeight//2)
 
@@ -172,7 +160,7 @@ class Camera:
             else:
                 pixel_pos = self.pos[0] + distance*ray_direction[0]
             pixel_pos = (pixel_pos-math.floor(pixel_pos))
-            blitPixels = textures[hit_data].subsurface((int(pixel_pos * textures[hit_data].get_width()), 0, 1, textures[hit_data].get_height())).copy()
+            blitPixels = w_map.textures[hit_data].subsurface((int(pixel_pos * w_map.textures[hit_data].get_width()), 0, 1, w_map.textures[hit_data].get_height())).copy()
             if hit_direction == Camera.EAST_WEST:
                 darkenSurf = Surface((1, blitPixels.get_height()))
                 darkenSurf.set_alpha(128)
@@ -215,7 +203,6 @@ class Camera:
                 if end_y < 0:
                     end_y = surface.get_height()
 
-                # print(surface.get_bytesize())
                 drawBuf = surfarray.pixels3d(surface)
                 for screen_y in range(end_y, surface.get_height()):
                     current_distance = surface.get_height() / (
@@ -227,10 +214,10 @@ class Camera:
 
                     floor_texture_pos = np.ndarray((2,), np.int32)
 
-                    floor_texture_pos[0] = int(current_floor_pos[0] * textures[4].get_width()) % textures[4].get_width()
-                    floor_texture_pos[1] = int(current_floor_pos[1] * textures[4].get_height()) % textures[
+                    floor_texture_pos[0] = int(current_floor_pos[0] * w_map.textures[4].get_width()) % w_map.textures[4].get_width()
+                    floor_texture_pos[1] = int(current_floor_pos[1] * w_map.textures[4].get_height()) % w_map.textures[
                         4].get_height()
-                    col = textures[4].get_at((floor_texture_pos[0], floor_texture_pos[1]))
+                    col = w_map.textures[4].get_at((floor_texture_pos[0], floor_texture_pos[1]))
 
                     drawBuf[screen_x][screen_y] = col[:3]
                     drawBuf[screen_x][surface.get_height() - screen_y] = col[:3]
@@ -280,7 +267,7 @@ class Camera:
 
                         spriteSlice = transform.scale(draw_sprite.subsurface((textureX, 0, 1, draw_sprite.get_height())).copy(), (1, min(sprite_height, 50000)))
 
-                        shaderSurf = Surface(spriteSlice.get_size(), SRCALPHA)
+                        shaderSurf = Surface((1, min(spriteSlice.get_height(), 400)), SRCALPHA)
                         shade_val = min(22*math.hypot(sprite_pos_rel_to_camera[0], sprite_pos_rel_to_camera[1]), 255)
 
                         shaderSurf.fill([255-shade_val, 255-shade_val, 255-shade_val])
@@ -298,4 +285,3 @@ class Camera:
 
 if __name__ == "__main__":
     cam = Camera()
-    print(cam.facing_vector)
