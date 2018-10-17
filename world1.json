@@ -1,0 +1,43 @@
+{
+ "type": "map",
+ "size": [15, 5],
+ "textures": [
+  {
+   "path": "textures/stone_bricks.png",
+   "tile_amount": 2.0
+  },
+  {
+   "path": "textures/mossy_stone_bricks.png",
+    "tile_amount":2.0
+  },
+   {
+     "path":"textures/cracked_stone_bricks.png",
+     "tile_amount":2.0
+   },
+   {
+     "path":"textures/chiseled_stone_bricks.png",
+     "tile_amount":8.0
+   },
+   {
+     "path":"textures/you_fool_xd.png",
+     "tile_amount":1.0
+   }
+ ],
+ "map_data": [
+   [1, 1, 3, 3, 1],
+   [1, 0, 0, 0, 2],
+   [2, 0, 0, 0, 2],
+   [1, 0, 0, 0, 3],
+   [1, 3, 2, 0, 1],
+   [1, 0, 0, 0, 1],
+   [1, 0, 1, 0, 1],
+   [1, 0, 2, 4, 1],
+   [1, 1, 0, 1, 1],
+   [2, 0, 0, 2, 1],
+   [1, 0, 2, 2, 1],
+   [3, 0, 2, 1, 1],
+   [1, 0, 0, 5, 1],
+   [1, 1, 2, 1, 1],
+   [1, 1, 1, 3, 1]
+ ]
+}
