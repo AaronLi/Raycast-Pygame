@@ -88,7 +88,6 @@ class Weapon():
 
     def get_floor_entity(self,initial_pos_x, initial_pos_y):
         entityOut = Weapon_Entity(self, initial_pos_x, initial_pos_y)
-        entityOut.cooldown = 5
         entityOut.health = None
         return entityOut
 
@@ -98,8 +97,9 @@ class Weapon_Entity(entity.Entity):
         self.weapon = weapon
         self.standing_sprites = self.weapon.ground_animations
         self.walking_sprites = self.weapon.ground_animations
-        self.cooldown = 5
+        self.cooldown = 3
         self.health = None
+        self.weapon.current_mag = 0
 
     def update(self, worldMap: np.ndarray, deltatime: float):
         super().update(worldMap, deltatime)

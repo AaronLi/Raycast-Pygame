@@ -1,8 +1,8 @@
 {
  "type": "entity",
  "health": 100,
- "x_position": 9.5,
- "y_position": 1.5,
+ "x_position": 5.5,
+ "y_position": 2.5,
  "frames": {
   "front": {
    "standing": "textures/doom_demon/demon_stand_front.png",

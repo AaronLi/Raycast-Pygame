@@ -20,8 +20,11 @@ class Player(entity.Entity):
         self.mouse_buttons_down = [False for i in range(6)]
         self.old_mouse_buttons = [False for i in range(6)]
         self.held_weapon = None
+        self.weapon_shake = 0
+        self.held_weapon_time = 0
 
     def set_weapon(self, new_weapon):
+        self.held_weapon_time = 0
         self.held_weapon = new_weapon
         self.held_weapon.set_mouse_button_listener(self.mouse_buttons_down, self.old_mouse_buttons)
 
@@ -33,14 +36,9 @@ class Player(entity.Entity):
 
     def update(self, worldMap: np.ndarray, deltatime: float):
         self.pickup_items()
-        if self.keysdown[pygame.K_w]:
-            self.move_forward(1)
-        if self.keysdown[pygame.K_a]:
-            self.move_sideways(-1)
-        if self.keysdown[pygame.K_s]:
-            self.move_forward(-1)
-        if self.keysdown[pygame.K_d]:
-            self.move_sideways(1)
+
+        self.move_player()
+
         if not self.held_weapon.is_reloading() and self.keysdown[pygame.K_r]:
             self.held_weapon.current_mag = 0
         super().update(worldMap, deltatime)
@@ -49,6 +47,7 @@ class Player(entity.Entity):
         self.held_weapon.update(deltatime)
         for i, v in enumerate(self.mouse_buttons_down):
             self.old_mouse_buttons[i] = v
+        self.held_weapon_time += deltatime
 
 
     def check_hitscan_hits(self):
@@ -72,7 +71,24 @@ class Player(entity.Entity):
 
 
         shoot_frame = math_tools.scale_image(self.held_weapon.get_frame(), 3)
-        draw_surface.blit(shoot_frame, (draw_surface.get_width()//2 - shoot_frame.get_width()//2, draw_surface.get_height()-80 - shoot_frame.get_height()))
+
+        #center bottom of screen
+        shoot_frame_pos = [draw_surface.get_width()//2 - shoot_frame.get_width()//2, draw_surface.get_height()-80 - shoot_frame.get_height()]
+
+        #move weapon around to make it seem more lively
+        LIFT_WEAPON_TIME = 0.5
+
+        if self.held_weapon_time >= LIFT_WEAPON_TIME:
+            shoot_frame_pos[0] -= 20*math.sin(math.radians(20*self.weapon_shake))
+            shoot_frame_pos[1] += 20 * abs(math.sin(math.radians(20 * self.weapon_shake)))
+            self.held_weapon_time = LIFT_WEAPON_TIME
+        else:
+            shoot_frame_pos[1] = draw_surface.get_height()-80 - shoot_frame.get_height()*(self.held_weapon_time/LIFT_WEAPON_TIME)
+
+
+        draw_surface.blit(shoot_frame, shoot_frame_pos)
+
+        draw.rect(draw_surface, (0,0,0), (0, draw_surface.get_height()-80, draw_surface.get_width(), 80))
 
         ammoCounter= uiFont.render("%02d/%02d"%(self.held_weapon.current_mag, self.held_weapon.mag_size), True, (255,255,255))
         draw_surface.blit(ammoCounter, (5, draw_surface.get_height()-ammoCounter.get_height()-5))
@@ -89,5 +105,24 @@ class Player(entity.Entity):
                 if collidedEntity.can_pick_up():
                     collidedEntity.health = 0
                     self.parent_world.entities.append(self.held_weapon.get_floor_entity(self.pos[0], self.pos[1]))
-                    self.held_weapon = collidedEntity.weapon
-                    self.held_weapon.set_mouse_button_listener(self.mouse_buttons_down, self.old_mouse_buttons)
+                    self.set_weapon(collidedEntity.weapon)
+
+    def move_player(self):
+        move_vector = np.zeros((2), np.int32)
+
+        if self.keysdown[pygame.K_w]:
+            move_vector[0]+=1
+        elif self.keysdown[pygame.K_s]:
+            move_vector[0]-=1
+        if self.keysdown[pygame.K_a]:
+            move_vector[1]+=1
+        if self.keysdown[pygame.K_d]:
+            move_vector[1]-=1
+        angle = math_tools.angle_between(move_vector, (1,0))
+        magnitude = 1
+        if self.keysdown[pygame.K_LSHIFT]:
+            magnitude = 1.5
+        if any(move_vector):
+            self.weapon_shake+=magnitude
+            self.move_forward(magnitude*math.cos(math.radians(angle)))
+            self.move_sideways(magnitude*math.sin(math.radians(angle)))

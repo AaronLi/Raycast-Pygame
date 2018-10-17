@@ -108,3 +108,7 @@ class Entity(camera.Camera):
     def damage(self, damage_amount):
         if self.health is not None:
             self.health-=damage_amount
+
+    def rotate_camera(self, angle_degrees):
+        super().rotate_camera(angle_degrees)
+        return self
