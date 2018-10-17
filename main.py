@@ -12,17 +12,14 @@ gameworld = game_world.GameWorld().load_world_from_file("dat/world1.txt")
 
 debug_sprite = image.load("textures/test_sprite.png").convert_alpha()
 
-
-
-
 gameworld.add_entity(filereader.read_file("doom_demon.json"))
 gameworld.add_entity(filereader.read_file("standing_target.json"))
 
-#gameworld.entities[0].rotate_camera(180)
+gameworld.add_entity(filereader.read_file("doom_shotgun.json").get_floor_entity(4, 1.5))
 
-player = filereader.read_file("player.json")
+player = filereader.read_file("player.json", gameworld)
 player.rotate_camera(180)
-player.held_weapon = filereader.read_file("doom_shotgun.json")
+player.set_weapon(filereader.read_file("assault_rifle.json"))
 gameworld.add_entity(player)
 gameworld.set_camera(player)
 clockity = time.Clock()
@@ -45,8 +42,6 @@ while running:
         elif e.type == KEYUP:
             player.handle_key(e.key, False)
         elif e.type == MOUSEBUTTONDOWN:
-            if e.button == 1 and player.can_fire():
-                player.fire_weapon()
             player.handle_mouse_botton(e.button, True)
         elif e.type == MOUSEBUTTONUP:
             player.handle_mouse_botton(e.button, False)
@@ -58,16 +53,13 @@ while running:
     if lockMouse:
         player.rotate_camera(mouse.get_rel()[0]/15)
 
-
     gameworld.update_world(deltatime)
 
     render_size = (640, 360)
     drawSurf = Surface(render_size)
     gameworld.draw_world(drawSurf)
 
-
     screen.blit(transform.scale(drawSurf, (render_size[0]*2, render_size[1]*2)), (0,0))
-
 
     if showHud:
         player.draw_hud(screen)

@@ -1,5 +1,5 @@
-import camera, math_tools, math
-from pygame import image
+import camera, math_tools, math, animation
+from pygame import image, Surface
 import numpy as np
 
 #For positional viewing, 0 is front, 1 is back, 2 is left, 3 is right
@@ -30,7 +30,11 @@ class Entity(camera.Camera):
         if moving_speed > 0.2:
             return self.walking_sprites[view_index].get_frame()
         else:
-            return self.standing_sprites[view_index]
+            outputImage = self.standing_sprites[view_index]
+            if  type(outputImage)== Surface:
+                return self.standing_sprites[view_index]
+            elif type(outputImage) == animation.Animation:
+                return self.standing_sprites[view_index].get_frame()
 
     def set_sprites(self, sprites):
         self.standing_sprites = sprites
@@ -100,3 +104,7 @@ class Entity(camera.Camera):
                 return Entity.LEFT
             else:
                 return Entity.RIGHT
+
+    def damage(self, damage_amount):
+        if self.health is not None:
+            self.health-=damage_amount

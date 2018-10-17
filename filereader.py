@@ -1,11 +1,11 @@
 import json, entity, animation, player, weapon
 from pygame import image
 
-def read_file(filename):
+def read_file(filename, parent_world = None):
     with open(filename) as f:
         loaded_object = json.load(f)
         if loaded_object['type'] == 'entity' or loaded_object['type'] == 'player':
-            return _load_entity(loaded_object, loaded_object['type'] == 'player')
+            return _load_entity(loaded_object, loaded_object['type'] == 'player', game_world= parent_world)
         if loaded_object['type'] == 'weapon':
             return _load_weapon(loaded_object)
 
@@ -53,6 +53,8 @@ def create_template(filename, template_type = 'entity'):
     elif template_type == 'weapon':
         data = {
             "type": "weapon",
+            "fire_mode": "full_auto",
+            "fire_rate": 800.0,
             "mag_size": 30,
             "damage": 33.4,
             "frames": {
@@ -106,7 +108,7 @@ if __name__ == "__main__":
         print("Created file %s"%file_directory)
 
 
-def _load_entity(loaded_object, is_player = False):
+def _load_entity(loaded_object, is_player = False, game_world = None):
     initial_x_position = loaded_object['x_position']
     initial_y_position = loaded_object['y_position']
 
@@ -155,7 +157,7 @@ def _load_entity(loaded_object, is_player = False):
     outEntity = entity.Entity(initial_x_position, initial_y_position)
 
     if is_player:
-        outEntity = player.Player(initial_x_position, initial_y_position)
+        outEntity = player.Player(game_world, initial_x_position, initial_y_position)
 
     outEntity.set_sprites(standing_sprites)
     outEntity.walking_sprites = [front_walking_animation, rear_walking_animation, left_walking_animation,
@@ -164,9 +166,13 @@ def _load_entity(loaded_object, is_player = False):
 
 def _load_weapon(loaded_object):
     outWeapon = weapon.Weapon()
+
+    # single variable parameters
     outWeapon.set_mag_size(loaded_object["mag_size"])
     outWeapon.damage = loaded_object['damage']
+    outWeapon.set_fire_rate(loaded_object['fire_rate'])
 
+    #holding firing and reloading animations
     outWeapon.holding_animation.set_frames([image.load(i).convert_alpha() for i in loaded_object['frames']['hold']['frames']], loaded_object['frames']['hold']['frame_rate'])
     outWeapon.firing_animation.set_frames([image.load(i).convert_alpha() for i in loaded_object['frames']['firing']['frames']], loaded_object['frames']['firing']['frame_rate'])
 
@@ -174,6 +180,21 @@ def _load_weapon(loaded_object):
     reload_fps = len(reloadFrames)/loaded_object['frames']['reload']['reload_time']
     outWeapon.reload_animation.set_frames(reloadFrames, reload_fps)
 
+    #fire mode parameter
+    loaded_weapon_fire_mode = loaded_object['fire_mode'].lower().strip()
+    if loaded_weapon_fire_mode == 'semi_auto':
+        outWeapon.fire_mode = weapon.SEMI_AUTO
+    elif loaded_weapon_fire_mode == 'full_auto':
+        outWeapon.fire_mode = weapon.FULL_AUTO
 
+    #on ground animations
+    on_ground_front = [image.load(i).convert_alpha() for i in loaded_object['frames']['ground']['front']['frames']]
+    on_ground_left = [image.load(i).convert_alpha() for i in loaded_object['frames']['ground']['left']['frames']]
+    on_ground_right = [image.load(i).convert_alpha() for i in loaded_object['frames']['ground']['right']['frames']]
+    on_ground_back = [image.load(i).convert_alpha() for i in loaded_object['frames']['ground']['back']['frames']]
 
+    outWeapon.ground_animations[0].set_frames(on_ground_front, loaded_object['frames']['ground']['front']['frame_rate'])
+    outWeapon.ground_animations[1].set_frames(on_ground_back, loaded_object['frames']['ground']['back']['frame_rate'])
+    outWeapon.ground_animations[2].set_frames(on_ground_left, loaded_object['frames']['ground']['left']['frame_rate'])
+    outWeapon.ground_animations[3].set_frames(on_ground_right, loaded_object['frames']['ground']['right']['frame_rate'])
     return outWeapon

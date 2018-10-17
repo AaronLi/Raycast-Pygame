@@ -1,8 +1,9 @@
 {
  "type": "weapon",
  "mag_size": 1,
- "damage": 80,
-
+ "damage": 100,
+ "fire_mode": "semi_auto",
+ "fire_rate": 34,
  "frames": {
   "hold": {
    "frames": [

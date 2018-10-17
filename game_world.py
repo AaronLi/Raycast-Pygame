@@ -20,10 +20,11 @@ class GameWorld:
 
     def update_world(self, delta_time):
         for i in range(len(self.entities)-1, -1, -1):
-            if self.entities[i].health <= 0:
-                print('ded')
-                del self.entities[i]
-                continue
+            if self.entities[i].health is not None:
+                if self.entities[i].health <=0:
+                    print('ded')
+                    del self.entities[i]
+                    continue
             self.entities[i].update(self.world, delta_time)
 
     def draw_world(self, surface):

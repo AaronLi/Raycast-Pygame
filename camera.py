@@ -29,7 +29,6 @@ class Camera:
     EAST_WEST = False
 
     def __init__(self, posX = 0, posY = 0) -> None:
-        global placeholder_texture
         self.pos = np.ndarray((2,), np.float32)
 
         self.pos[0] = posX
@@ -53,6 +52,7 @@ class Camera:
         self.camera_plane[1] = 0.66
 
         self.sprites_in_view = []
+        self.colliding_sprites = []
 
 
     # camera has absolute position movement
@@ -87,6 +87,7 @@ class Camera:
         """
 
         self.sprites_in_view = []
+        self.colliding_sprites = []
         check_position = np.ndarray((2,), np.float32)
 
         step_direction = np.ndarray((2,), np.int32)
@@ -250,6 +251,9 @@ class Camera:
             seen_sprite = False
             draw_sprite = sprites[v[1]].get_sprite(self.facing_vector)
             sprite_pos_rel_to_camera = sprites[v[1]].pos - self.pos
+
+            if math.hypot(sprite_pos_rel_to_camera[0], sprite_pos_rel_to_camera[1]) < 0.4:
+                self.colliding_sprites.append(sprites[v[1]])
 
             invDet = 1 / (self.camera_plane[0] * self.facing_vector[1] - self.facing_vector[0] * self.camera_plane[1])
 

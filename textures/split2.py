@@ -9,7 +9,7 @@ init()
 ##    fname = files[1]
 ##else:
 ##    fname = glob.glob("*.png")[0]
-fname = "Doom-Demon.png"
+fname = "assault_rifle.png"
 pic = image.load(fname)   
 
 wid,hi = pic.get_size()
