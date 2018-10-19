@@ -106,7 +106,10 @@ class Player(entity.Entity):
                 if collidedEntity.can_pick_up():
                     print("Blah")
                     collidedEntity.health = 0
-                    self.parent_world.entities.append(self.held_weapon.get_floor_entity(self.pos[0], self.pos[1]))
+                    new_entity = self.held_weapon.get_floor_entity(self.pos[0], self.pos[1])
+                    new_entity.facing_vector = self.facing_vector
+                    new_entity.move_forward(20)
+                    self.parent_world.entities.append(new_entity)
                     self.set_weapon(collidedEntity.weapon)
 
     def move_player(self):

@@ -8,7 +8,7 @@ screen = display.set_mode((1280,800))
 arialFont = font.SysFont("Arial", 20)
 
 gameworld = game_world.GameWorld()
-gameworld.world = filereader.read_file("world1.json")
+gameworld.world = filereader.read_file("world2.json")
 
 debug_sprite = image.load("textures/test_sprite.png").convert_alpha()
 

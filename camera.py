@@ -238,6 +238,9 @@ class Camera:
             seen_sprite = False
             draw_sprite = sprites[v[1]].get_sprite(self.facing_vector)
             sprite_pos_rel_to_camera = sprites[v[1]].pos - self.pos
+            if(sprite_pos_rel_to_camera[0] == 0 and sprite_pos_rel_to_camera[1] == 0):
+                sprite_pos_rel_to_camera[0] = 0.01
+                sprite_pos_rel_to_camera[1] = 0.01
 
             if math.hypot(sprite_pos_rel_to_camera[0], sprite_pos_rel_to_camera[1]) < 0.4:
                 self.colliding_sprites.append(sprites[v[1]])
