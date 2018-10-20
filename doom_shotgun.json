@@ -3,7 +3,7 @@
  "mag_size": 1,
  "damage": 100,
  "fire_mode": "semi_auto",
- "fire_rate": 34,
+ "fire_rate": 100,
  "frames": {
   "hold": {
    "frames": [
@@ -26,7 +26,7 @@
     "textures/doom_sg/doom_shotgun012.png",
     "textures/doom_sg/doom_shotgun013.png"
    ],
-   "reload_time": 1.7
+   "reload_time": 2
   },
   "firing": {
    "frames": [
