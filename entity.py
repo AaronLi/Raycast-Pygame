@@ -1,8 +1,10 @@
 import camera, world_map, math, animation, math_tools
-from pygame import image, Surface
+from pygame import Surface
 import numpy as np
 
 #For positional viewing, 0 is front, 1 is back, 2 is left, 3 is right
+
+
 
 class Entity(camera.Camera):
 
@@ -79,6 +81,8 @@ class Entity(camera.Camera):
             self.pos = np.round(self.pos, 2)
         else:
             self.pos = newpos
+        for i in self.standing_sprites:
+            i.update(deltatime)
         for i in self.walking_sprites:
             i.update(deltatime)
 
@@ -122,7 +126,7 @@ class Entity(camera.Camera):
         return self
 
     def pathfind(self, world_grid, destination, deltatime):
-        self.path = self.find_steps_to_coordinate(world_grid, destination)
+        self.path = self._find_steps_to_coordinate(world_grid, destination)
         if self.path is None or len(self.path) <= 1: # if there is only 1 element, your position is the destination
             return
 
@@ -157,7 +161,7 @@ class Entity(camera.Camera):
             else:
                 self.rotate_camera(-rotate_amount)
 
-    def find_steps_to_coordinate(self, map :np.ndarray, destination):
+    def _find_steps_to_coordinate(self, map :np.ndarray, destination):
         #A* algorithm, some optimizations may be needed in respect to the data structures used
         # move from my position to destination using a*
         start_pos = tuple(self.pos.astype(np.int32))
@@ -169,7 +173,7 @@ class Entity(camera.Camera):
         gScore[start_pos] = 0
 
         fScore = dict()
-        fScore[start_pos] = _distance_to(start_pos, destination)
+        fScore[start_pos] = math_tools.distance_manhattan(start_pos, destination)
 
         while len(open_set) > 0:
             current_check_node = open_set[0]
@@ -185,6 +189,7 @@ class Entity(camera.Camera):
 
             neighbour_coordinates = [(1,0), (-1,0), (0,1), (0,-1)]
 
+            #remove coordinates that are either out of bounds or in a wall
             for i in range(len(neighbour_coordinates)-1, -1, -1):
                 potential_neighbour_position = (neighbour_coordinates[i][0]+current_check_node[0], neighbour_coordinates[i][1] + current_check_node[1])
                 if potential_neighbour_position[0] < map.shape[0] and potential_neighbour_position[1] < map.shape[1]:
@@ -198,7 +203,7 @@ class Entity(camera.Camera):
                 if neighbour_pos in closed_set:
                     continue
 
-                tentative_gscore = gScore[current_check_node] + _distance_to(current_check_node, neighbour_pos)
+                tentative_gscore = gScore[current_check_node] + math_tools.distance_manhattan(current_check_node, neighbour_pos)
 
                 if neighbour_pos not in open_set:
                     open_set.append(neighbour_pos)
@@ -208,10 +213,7 @@ class Entity(camera.Camera):
                             continue
                 came_from[neighbour_pos] = current_check_node
                 gScore[neighbour_pos] = tentative_gscore
-                fScore[neighbour_pos] = gScore[neighbour_pos] + _distance_to(neighbour_pos, destination)
-def _distance_to(start_pos, end_pos):
-    combined_distance = abs(start_pos[0]-end_pos[0]) + abs(start_pos[1]-end_pos[1])
-    return combined_distance
+                fScore[neighbour_pos] = gScore[neighbour_pos] + math_tools.distance_manhattan(neighbour_pos, destination)
 
 
 def _reconstruct_path(came_from :dict, current_pos):

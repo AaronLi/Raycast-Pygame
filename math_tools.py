@@ -45,3 +45,13 @@ def tile_image(to_tile :Surface, tile_amount :int):
         for j in range(tile_amount):
             out_surf.blit(to_tile, (to_tile.get_width()*j, to_tile.get_height()*i))
     return out_surf
+
+
+def distance_manhattan(start_pos, end_pos):
+    combined_distance = abs(start_pos[0]-end_pos[0]) + abs(start_pos[1]-end_pos[1])
+    return combined_distance
+
+def distance_euclidean(start_pos, end_pos):
+    distance = math.hypot(start_pos[0]-end_pos[0], start_pos[1]-end_pos[1])
+    return distance
+

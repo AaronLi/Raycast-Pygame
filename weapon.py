@@ -104,10 +104,7 @@ class Weapon_Entity(entity.Entity):
     def update(self, worldMap: np.ndarray, deltatime: float, velocity_reduction_scalar = 0.6):
         super().update(worldMap, deltatime, velocity_reduction_scalar)
         self.cooldown-=deltatime
-        for i in self.standing_sprites:
-            i.update(deltatime)
-        for i in self.walking_sprites:
-            i.update(deltatime)
+
 
     def can_pick_up(self):
         #the pickup cooldown is done and this object isn't marked for deletion
