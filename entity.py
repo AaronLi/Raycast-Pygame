@@ -11,7 +11,6 @@ class Entity(camera.Camera):
     REAR = 1
     LEFT = 2
     RIGHT = 3
-    SECONDS_PER_CHECK = 1
     EPSILON = 0.00001
 
     def __init__(self, posX=0, posY=0) -> None:
@@ -25,7 +24,6 @@ class Entity(camera.Camera):
         self.max_health = 100
         self.velocity = np.zeros((2,), np.float32)
         self.path = []
-        self.time_to_last_check = 0
         self.destination = None
 
     def get_sprite(self, viewer_vector):
@@ -35,7 +33,7 @@ class Entity(camera.Camera):
             return self.walking_sprites[view_index].get_frame()
         else:
             outputImage = self.standing_sprites[view_index]
-            if  type(outputImage)== Surface:
+            if type(outputImage)== Surface:
                 return self.standing_sprites[view_index]
             elif type(outputImage) == animation.Animation:
                 return self.standing_sprites[view_index].get_frame()
