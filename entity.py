@@ -58,8 +58,8 @@ class Entity(camera.Camera):
 
         self.sprite_percentage = self.width / front_sprite.get_width() # percentage of the texture that is filled by the sprite
 
-    def update(self, worldMap: world_map.World_Map, deltatime: float):
-        self.velocity *= 0.6
+    def update(self, worldMap: world_map.World_Map, deltatime: float, velocity_reduction_scalar = 0.6):
+        self.velocity *= velocity_reduction_scalar
         if self.velocity[0] ** 2 < 0.0000000001:
             self.velocity[0] = 0
         if self.velocity[1] ** 2 < 0.0000000001:
@@ -111,3 +111,9 @@ class Entity(camera.Camera):
     def rotate_camera(self, angle_degrees):
         super().rotate_camera(angle_degrees)
         return self
+
+    def find_steps_to_coordinate(self, map :np.ndarray, destination):
+        # move from my position to destination using a*
+        closed_set = {}
+        open_set = {self.pos.astype(np.int32)}
+

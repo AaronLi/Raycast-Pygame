@@ -1,9 +1,9 @@
 {
  "type": "weapon",
  "fire_mode": "full_auto",
- "fire_rate": 600.0,
+ "fire_rate": 700.0,
  "mag_size": 20,
- "damage": 15,
+ "damage": 19,
  "frames": {
   "hold": {
    "frames": [
@@ -16,7 +16,7 @@
      "textures/assault_rifle/assault_rifle_shoot0.png",
      "textures/assault_rifle/assault_rifle_shoot1.png"
    ],
-   "frame_rate": 10
+   "frame_rate": 20
   },
   "reload": {
    "frames": [
