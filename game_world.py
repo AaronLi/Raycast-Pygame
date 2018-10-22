@@ -41,3 +41,6 @@ class GameWorld:
 
     def get_entities(self):
         return self.entities
+
+    def get_world_grid(self):
+        return self.world.map_data

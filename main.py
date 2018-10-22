@@ -13,13 +13,15 @@ gameworld.world = filereader.read_file("world2.json")
 debug_sprite = image.load("textures/test_sprite.png").convert_alpha()
 
 gameworld.add_entity(filereader.read_file("doom_demon.json").rotate_camera(-90))
-gameworld.add_entity(filereader.read_file("standing_target.json"))
+#gameworld.add_entity(filereader.read_file("standing_target.json"))
+#gameworld.add_entity(filereader.read_file("standing_target2.json"))
 
-gameworld.add_entity(filereader.read_file("doom_shotgun.json").get_floor_entity(1.5, 3.5))
+gameworld.add_entity(filereader.read_file("assault_rifle.json").get_floor_entity(5.5, 3.5))
 
 player = filereader.read_file("player.json", gameworld)
-player.rotate_camera(180)
-player.set_weapon(filereader.read_file("assault_rifle.json"))
+#gameworld.entities[0].rotate_camera(90)
+player.rotate_camera(90)
+player.set_weapon(filereader.read_file("doom_shotgun.json"))
 gameworld.add_entity(player)
 gameworld.set_camera(player)
 clockity = time.Clock()
@@ -58,7 +60,6 @@ while running:
     render_size = (640, 360)
     drawSurf = Surface(render_size)
     gameworld.draw_world(drawSurf)
-
     screen.blit(transform.scale(drawSurf, (render_size[0]*2, render_size[1]*2)), (0,0))
 
     if showHud:

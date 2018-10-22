@@ -124,9 +124,9 @@ class Player(entity.Entity):
         if self.keysdown[pygame.K_d]:
             move_vector[1]-=1
         angle = math_tools.angle_between(move_vector, (1,0))
-        magnitude = 1
+        magnitude = 1.2
         if self.keysdown[pygame.K_LSHIFT]:
-            magnitude = 1.5
+            magnitude = 1.7
         if any(move_vector):
             self.weapon_shake+=magnitude
             self.move_forward(magnitude*math.cos(math.radians(angle)))

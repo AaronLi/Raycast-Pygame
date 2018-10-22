@@ -97,12 +97,12 @@ class Weapon_Entity(entity.Entity):
         self.weapon = weapon
         self.standing_sprites = self.weapon.ground_animations
         self.walking_sprites = self.weapon.ground_animations
-        self.cooldown = 3
+        self.cooldown = 2
         self.health = None
         self.weapon.current_mag = 0
 
-    def update(self, worldMap: np.ndarray, deltatime: float):
-        super().update(worldMap, deltatime)
+    def update(self, worldMap: np.ndarray, deltatime: float, velocity_reduction_scalar = 0.6):
+        super().update(worldMap, deltatime, velocity_reduction_scalar)
         self.cooldown-=deltatime
         for i in self.standing_sprites:
             i.update(deltatime)

@@ -1,7 +1,7 @@
 {
  "type": "entity",
  "health": 150,
- "x_position": 3.5,
+ "x_position": 5.5,
  "y_position": 1.5,
  "frames": {
   "front": {
