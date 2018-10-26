@@ -226,6 +226,8 @@ class Entity(camera.Camera):
 
         return current_deviation_max > angle_deviation
 
+
+    #TODO: WIP, finish later lol
     def in_line_of_sight(self, other_entity, world_map :world_map.World_Map):
         step_direction = np.ndarray((2), np.int32)
         distance_to_first_square = np.ndarray((2), np.float32)
