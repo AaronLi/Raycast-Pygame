@@ -62,6 +62,8 @@ while running:
     gameworld.draw_world(drawSurf)
     screen.blit(transform.scale(drawSurf, (render_size[0]*2, render_size[1]*2)), (0,0))
 
+    gameworld.entities[0].in_line_of_sight(player, gameworld)
+
     if showHud:
         player.draw_hud(screen)
         screen.blit(arialFont.render("FPS: %.2f" % clockity.get_fps(), True, (255, 255, 255), (0, 0, 0)), (5, 5))

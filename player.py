@@ -52,15 +52,7 @@ class Player(entity.Entity):
 
     def check_hitscan_hits(self):
         for i in self.sprites_in_view:
-            angle_deviation = math_tools.angle_between(i.pos-self.pos, self.facing_vector)
-
-            position_difference = i.pos - self.pos
-
-            distance = math.hypot(position_difference[0], position_difference[1])
-
-            current_deviation_max = (21.5*i.sprite_percentage)/distance
-
-            if current_deviation_max>angle_deviation:
+            if self.is_looking_at(i):
                 i.damage(self.held_weapon.damage)
 
     def can_fire(self):

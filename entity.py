@@ -214,7 +214,33 @@ class Entity(camera.Camera):
                 came_from[neighbour_pos] = current_check_node
                 gScore[neighbour_pos] = tentative_gscore
                 fScore[neighbour_pos] = gScore[neighbour_pos] + math_tools.distance_manhattan(neighbour_pos, destination)
+    def is_looking_at(self, other_entity):
 
+        angle_deviation = math_tools.angle_between(other_entity.pos - self.pos, self.facing_vector)
+
+        position_difference = other_entity.pos - self.pos
+
+        distance = math.hypot(position_difference[0], position_difference[1])
+
+        current_deviation_max = (21.5 * other_entity.sprite_percentage) / distance
+
+        return current_deviation_max > angle_deviation
+
+    def in_line_of_sight(self, other_entity, world_map :world_map.World_Map):
+        step_direction = np.ndarray((2), np.int32)
+        distance_to_first_square = np.ndarray((2), np.float32)
+
+        vector_to_entity = self.pos - other_entity.pos
+
+        for i in range(2):
+            if vector_to_entity[i] > 0:
+                step_direction[i] = 1
+                distance_to_first_square[i] = int(self.pos[i])+1-self.pos[i]
+            else:
+                step_direction[i] = -1
+                distance_to_first_square[i] = self.pos[i] - int(self.pos[i])
+
+        print(distance_to_first_square, step_direction)
 
 def _reconstruct_path(came_from :dict, current_pos):
     total_path = [current_pos]
