@@ -37,7 +37,7 @@ class Player(entity.Entity):
     def update(self, worldMap: world_map.World_Map, deltatime: float):
         self.pickup_items()
 
-        self.move_player()
+        self.move_player(deltatime)
 
         if not self.held_weapon.is_reloading() and self.keysdown[pygame.K_r]:
             self.held_weapon.current_mag = 0
@@ -104,7 +104,7 @@ class Player(entity.Entity):
                     self.parent_world.entities.append(new_entity)
                     self.set_weapon(collidedEntity.weapon)
 
-    def move_player(self):
+    def move_player(self, deltatime):
         move_vector = np.zeros((2), np.int32)
 
         if self.keysdown[pygame.K_w]:
@@ -120,6 +120,6 @@ class Player(entity.Entity):
         if self.keysdown[pygame.K_LSHIFT]:
             magnitude = 1.7
         if any(move_vector):
-            self.weapon_shake+=magnitude
+            self.weapon_shake+=magnitude*deltatime*math.pi*4
             self.move_forward(magnitude*math.cos(math.radians(angle)))
             self.move_sideways(magnitude*math.sin(math.radians(angle)))

@@ -74,6 +74,7 @@ class Camera:
         """
 
         to_blit = []
+        hit_direction = Camera.NORTH_SOUTH
         self.sprites_in_view = []
         self.colliding_sprites = []
         check_position = np.ndarray((2,), np.float32)
@@ -88,7 +89,6 @@ class Camera:
 
         for screen_x in range(surface.get_width()):
             map_pos = self.pos.astype(np.int32)
-            precise_ray = self.pos.copy()
 
             # screen_x is the column of pixels on the screen whose rendering info is being checked
 
@@ -116,22 +116,16 @@ class Camera:
             else:
                 step_direction[1] = 1
                 check_position[1] = (map_pos[1] + 1 - self.pos[1]) * distance_between_gridline_x_y[1]
-            precise_ray+=check_position/distance_between_gridline_x_y
             #begin casting ray
-
             while not hit:
-
                 if check_position[0] < check_position[1]:
                     check_position[0] += distance_between_gridline_x_y[0]
                     map_pos[0]+=step_direction[0]
                     hit_direction = Camera.EAST_WEST
-                    precise_ray[0]+=step_direction[0]
                 else:
                     check_position[1] += distance_between_gridline_x_y[1]
                     map_pos[1] += step_direction[1]
                     hit_direction = Camera.NORTH_SOUTH
-                    precise_ray[1]+=step_direction[1]
-
                 if w_map.map_data[map_pos[0]][map_pos[1]] != 0:
                     hit = True
 
@@ -239,6 +233,7 @@ class Camera:
                             seen_sprite = True
             if seen_sprite:
                 self.sprites_in_view.append(sprites[v[1]])
+
         surface.blits(to_blit)
         return surface
 

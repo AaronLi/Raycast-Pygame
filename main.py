@@ -1,9 +1,13 @@
 from pygame import *
-import game_world, filereader, world_map
+import game_world, filereader
+
 font.init()
+
 running = True
 
 screen = display.set_mode((1280,800))
+
+event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
 
 arialFont = font.SysFont("Arial", 20)
 
@@ -57,10 +61,11 @@ while running:
 
     gameworld.update_world(deltatime)
 
-    render_size = (640, 360)
+    #todo: make settings menu to change resolution
+    render_size = (640,360)
     drawSurf = Surface(render_size)
     gameworld.draw_world(drawSurf)
-    screen.blit(transform.scale(drawSurf, (render_size[0]*2, render_size[1]*2)), (0,0))
+    screen.blit(transform.scale(drawSurf, (1280, 720)), (0,0))
 
     gameworld.entities[0].in_line_of_sight(player, gameworld)
 
