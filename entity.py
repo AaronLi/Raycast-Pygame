@@ -242,7 +242,7 @@ class Entity(camera.Camera):
                 step_direction[i] = -1
                 distance_to_first_square[i] = self.pos[i] - int(self.pos[i])
 
-        print(distance_to_first_square, step_direction)
+        #print(distance_to_first_square, step_direction)
 
 def _reconstruct_path(came_from :dict, current_pos):
     total_path = [current_pos]

@@ -63,7 +63,7 @@ class Camera:
         self.camera_plane = np.dot(self.camera_plane, rotate_matrix)
 
 
-    def render_scene(self,surface :Surface, w_map :world_map.World_Map, sprites :list, FLOORCAST = False):
+    def render_scene(self,surface :Surface, w_map :world_map.World_Map, sprites :list):
         """
         renders the world using raycasting
         :param surface:
@@ -73,7 +73,7 @@ class Camera:
         :return: None
         """
 
-
+        to_blit = []
         self.sprites_in_view = []
         self.colliding_sprites = []
         check_position = np.ndarray((2,), np.float32)
@@ -161,6 +161,7 @@ class Camera:
                 pixel_pos = self.pos[0] + distance*ray_direction[0]
             pixel_pos = (pixel_pos-math.floor(pixel_pos))
             blitPixels = w_map.textures[hit_data].subsurface((int(pixel_pos * w_map.textures[hit_data].get_width()), 0, 1, w_map.textures[hit_data].get_height())).copy()
+
             if hit_direction == Camera.EAST_WEST:
                 darkenSurf = Surface((1, blitPixels.get_height()))
                 darkenSurf.set_alpha(128)
@@ -172,57 +173,12 @@ class Camera:
             scaled_pixels = transform.scale(blitPixels, (1, min(end_y - start_y, 50000)))
 
 
-            surface.blit(scaled_pixels, (screen_x, start_y))
+            to_blit.append((scaled_pixels, (screen_x, start_y)))
 
             # fill in z buffer
 
             zbuffer[screen_x] = distance
 
-            # floor casting
-            if FLOORCAST:
-                floor_texture_coordinate = np.ndarray((2,), np.float32)
-
-                if hit_direction == Camera.EAST_WEST:
-                    if ray_direction[0] > 0:
-                        floor_texture_coordinate[0] = map_pos[0]
-                        floor_texture_coordinate[1] = map_pos[1] + pixel_pos
-                    else:
-                        floor_texture_coordinate[0] = map_pos[0] + 1
-                        floor_texture_coordinate[1] = map_pos[1] + pixel_pos
-                else:
-                    if ray_direction[1] > 0:
-                        floor_texture_coordinate[0] = map_pos[0] + pixel_pos
-                        floor_texture_coordinate[1] = map_pos[1]
-                    else:
-                        floor_texture_coordinate[0] = map_pos[0] + pixel_pos
-                        floor_texture_coordinate[1] = map_pos[1] + 1
-
-                distance_to_wall = distance
-
-                distance_from_player = 0
-                if end_y < 0:
-                    end_y = surface.get_height()
-
-                drawBuf = surfarray.pixels3d(surface)
-                for screen_y in range(end_y, surface.get_height()):
-                    current_distance = surface.get_height() / (
-                            2 * screen_y - surface.get_height())
-
-                    weight = (current_distance - distance_from_player) / (distance_to_wall - distance_from_player)
-
-                    current_floor_pos = weight * floor_texture_coordinate + (1 - weight) * self.pos
-
-                    floor_texture_pos = np.ndarray((2,), np.int32)
-
-                    floor_texture_pos[0] = int(current_floor_pos[0] * w_map.textures[4].get_width()) % w_map.textures[4].get_width()
-                    floor_texture_pos[1] = int(current_floor_pos[1] * w_map.textures[4].get_height()) % w_map.textures[
-                        4].get_height()
-                    col = w_map.textures[4].get_at((floor_texture_pos[0], floor_texture_pos[1]))
-
-                    drawBuf[screen_x][screen_y] = col[:3]
-                    drawBuf[screen_x][surface.get_height() - screen_y] = col[:3]
-
-                del drawBuf
         # sprite casting
         sprites = [s for s in sprites if s != self]
 
@@ -277,13 +233,13 @@ class Camera:
 
                         spriteSlice.blit(shaderSurf, (0,0), (0, 0)+shaderSurf.get_size(), BLEND_MULT) # blend mult multiplies each rgb value by the blitter's rgb/255 value
 
-                        surface.blit(spriteSlice, (draw_stripe_x, surface.get_height()//2 - spriteSlice.get_height()//2))
+                        to_blit.append((spriteSlice, (draw_stripe_x, surface.get_height()//2 - spriteSlice.get_height()//2)))
 
                         if draw_stripe_x == int(surface.get_width()//2): # if the stripe goes through the user's crosshairs
                             seen_sprite = True
             if seen_sprite:
                 self.sprites_in_view.append(sprites[v[1]])
-
+        surface.blits(to_blit)
         return surface
 
 if __name__ == "__main__":
