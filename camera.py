@@ -1,4 +1,4 @@
-from pygame import Surface, draw, image, transform, SRCALPHA, surfarray, BLEND_MULT
+from pygame import Surface, draw, transform, SRCALPHA, BLEND_MULT
 import numpy as np
 import math, world_map
 
